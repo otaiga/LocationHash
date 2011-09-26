@@ -1,6 +1,7 @@
 Location::Application.routes.draw do
   # get "location/index"
-
+  match '/callback', :to => 'location#callback'
+  match '/messages', :to => 'location#messages'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
