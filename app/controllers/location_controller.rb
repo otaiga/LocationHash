@@ -4,9 +4,7 @@ class LocationController < ApplicationController
   require 'httparty'
   
   layout "frontend"
-
-  CLIENT_ID = ""
-  CLIENT_SECRET = ""
+  
   AUTH_SERVER = "https://hashblue.com"
   API_SERVER = "https://api.hashblue.com"
   
