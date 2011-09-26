@@ -5,6 +5,7 @@ class LocationController < ApplicationController
   
   layout "frontend"
   
+  
   AUTH_SERVER = "https://hashblue.com"
   API_SERVER = "https://api.hashblue.com"
   
