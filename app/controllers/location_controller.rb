@@ -7,6 +7,7 @@ class LocationController < ApplicationController
   
   CLIENT_ID = ENV['CLIENT_ID']
   CLIENT_SECRET = ENV['CLIENT_SECRET']
+  
   AUTH_SERVER = "https://hashblue.com"
   API_SERVER = "https://api.hashblue.com"
   
