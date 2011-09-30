@@ -25,7 +25,7 @@ class LocationController < ApplicationController
       
         session[:access_token] = response["access_token"]
          redirect_to '/'
-        
+     
   end
   
   
