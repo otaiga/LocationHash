@@ -5,6 +5,7 @@ Location::Application.routes.draw do
   match '/bluevia', :to => 'location#bluevia'
   match '/callbackblue', :to => 'location#callbackblue'
   match '/calllocation', :to => 'location#calllocation'
+  match '/update', :to => 'location#update'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
