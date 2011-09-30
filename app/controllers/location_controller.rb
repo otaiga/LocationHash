@@ -55,13 +55,13 @@ class LocationController < ApplicationController
                    
           # redirect_to '/messages'
         when 401
-         redirect_to AUTH_SERVER + "/oauth/authorize?client_id=#{CLIENT_ID}&client_secret=#{CLIENT_SECRET}&redirect_uri=http://falling-water-4664.heroku.com/callback"
+         redirect_to AUTH_SERVER + "/oauth/authorize?client_id=#{CLIENT_ID}&client_secret=#{CLIENT_SECRET}&redirect_uri=http://" + request.host_with_port + "/callback"
         else
           "Got an error from the server (#{@messages_response.code.inspect}): #{CGI.escapeHTML(@messages_response.inspect)}"
         end
       else
         # No Access token therefore authorize this application and request an access token
-        redirect_to "https://hashblue.com/oauth/authorize?client_id=#{CLIENT_ID}&client_secret=#{CLIENT_SECRET}&redirect_uri=http://falling-water-4664.heroku.com/callback"
+        redirect_to "https://hashblue.com/oauth/authorize?client_id=#{CLIENT_ID}&client_secret=#{CLIENT_SECRET}&redirect_uri=http://" + request.host_with_port + "/callback"
         puts "ERROR TOKEN #{CLIENT_SECRET}"
       end
     end
