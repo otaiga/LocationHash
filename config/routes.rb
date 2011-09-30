@@ -2,6 +2,9 @@ Location::Application.routes.draw do
   # get "location/index"
   match '/callback', :to => 'location#callback'
   match '/messages', :to => 'location#messages'
+  match '/bluevia', :to => 'location#bluevia'
+  match '/callbackblue', :to => 'location#callbackblue'
+  match '/calllocation', :to => 'location#calllocation'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

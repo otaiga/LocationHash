@@ -2,14 +2,98 @@ class LocationController < ApplicationController
   require 'open-uri'
   require 'json'
   require 'httparty'
+  require 'bluevia'
+    include Bluevia
   
   layout "frontend"
   
   CLIENT_ID = ENV['CLIENT_ID']
   CLIENT_SECRET = ENV['CLIENT_SECRET']
   
+  #Blue Via stuff......
+  CONSUMER_KEY = ENV['BLUEVIA_KEY']
+  CONSUMER_SECRET = ENV['BLUEVIA_SECRET']
+  
+  #......
+  
+  
   AUTH_SERVER = "https://hashblue.com"
   API_SERVER = "https://api.hashblue.com"
+  
+  
+    #Blue Via stuff......
+   def bluevia
+     puts "Bluevia bit:"
+     
+     #trying something here: 
+     
+     puts "key =" + CONSUMER_KEY
+     puts "setect =" + CONSUMER_SECRET
+     
+     bc = BlueviaClient.new(
+               { :consumer_key   => CONSUMER_KEY,
+                 :consumer_secret=> CONSUMER_SECRET,
+                 :uri            => "https://api.bluevia.com"
+               })
+               
+                
+     service = bc.get_service(:oAuth)
+     token, secret, url = service.get_request_token({:callback =>"http://" + request.host_with_port + "/callbackblue"})
+     
+      puts "Token= " +token 
+      puts "Secrect =" +secret
+      puts "url = " + url
+          
+      response.set_cookie(:token, "#{token}|#{secret}")
+      
+      redirect_to url 
+     
+    end
+    #......
+  
+  
+  
+  def callbackblue
+    oauth_verifier = params[:oauth_verifier]
+      get_token_from_cookie
+
+      @bc = BlueviaClient.new(
+               { :consumer_key   => CONSUMER_KEY,
+                 :consumer_secret=> CONSUMER_SECRET
+               })
+
+      if COMMERCIAL
+       @bc.set_commercial
+      end
+
+      @service = @bc.get_service(:oAuth)
+      @token, @token_secret = @service.get_access_token(@request_token, @request_secret, oauth_verifier)
+
+      redirect_to  '/location'
+    end
+
+   
+   def calllocation
+     @bc = BlueviaClient.new(
+               { :consumer_key   => CONSUMER_KEY,
+                 :consumer_secret=> CONSUMER_SECRET,
+                 :token          => params[:token],
+                 :token_secret   => params[:token_secret],
+                 :uri            => "https://api.bluevia.com"
+               })
+   
+       @bc.set_commercial
+   
+     @service = @bc.get_service(:Location)
+     location = @service.get_location
+   
+     latlong = location['terminalLocation']['currentLocation']['coordinates']
+   
+     lat = latlong['latitude']
+     lon = latlong['longitude']
+     
+   end
+
   
   
     def callback

@@ -9,6 +9,8 @@ gem 'sqlite3'
 gem 'json'
 gem 'sqlite3'
 gem 'httparty'
+gem 'bluevia'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 
