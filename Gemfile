@@ -11,6 +11,7 @@ gem 'sqlite3'
 gem 'httparty'
 gem 'bluevia'
 gem 'geonames'
+gem 'hash-blue'
 
 # Use unicorn as the web server
 # gem 'unicorn'

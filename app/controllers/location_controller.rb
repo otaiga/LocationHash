@@ -3,7 +3,8 @@ class LocationController < ApplicationController
   require 'json'
   require 'httparty'
   require 'bluevia'
-    include Bluevia
+  require 'hash-blue'
+  include Bluevia
   
   layout "frontend"
   
@@ -144,25 +145,31 @@ class LocationController < ApplicationController
         )
       
         session[:access_token] = response["access_token"]
+        $access_token = response["access_token"]
+        HashBlue::Client.user = $access_token
+        
          redirect_to '/'
      
   end
   
-  
-  
-
     
   def index
       myarray=Array.new
       hello = String.new
       
      if session[:access_token]
-        # authorized so request the messages from #blue
+        # authorized so request the messages from #blue)
         @messages_response = get_with_access_token("/messages.json")
+
         case @messages_response.code
-        when 200
+                   when 200
           @messages = @messages_response["messages"]
-           @messages.reverse.each {|message| if message["content"].last(10) == "Where r u?" 
+             @messages.reverse.each {|message| if message["content"].last(10) == "Where r u?" 
+               # if $timestamp == message["timestamp"]
+               #   puts "this has already been done before"
+               # else
+               @contact = message["contact"]["msisdn"]
+               # $timestamp = message["timestamp"]
              
              @bc = BlueviaClient.new(
                        { :consumer_key   => CONSUMER_KEY,
@@ -185,25 +192,40 @@ class LocationController < ApplicationController
              session[:lat] = @lat
              session[:lon] = @lon
              
-           end
+           # end
+         end
          }
             coordinates = [session[:lat], session[:lon]]
-            puts coordinates
             
             @map = GMap.new("map")
             @map.control_init(:large_map => true, :map_type => true)
             @map.center_zoom_init(coordinates,14)
             @map.overlay_init(GMarker.new(coordinates,:title => "Here I am", :info_window => "Here I Am")) 
             
+            #Geo-names
+            places_nearby = Geonames::WebService.find_nearby_place_name @lat, @lon
+            
+            @here = places_nearby.first.name
+            @here2 = places_nearby.first.country_name
+            
+            puts @here
+            # p places_sub
+            
+            
+            
             #HASHBLUE STUFF HERE!
             
+            puts "TO: " + @contact
+            puts "Message: I'm around here... somehere "
+            puts @here + ", " + @here2
+            @message = "I'm around here....somewhere\n" + @here + ", " + @here2 
+              
+              
             
+            HashBlue::Message.create!(@contact, @message)
+            puts "message sent"
             
-            
-            
-            
-             
-                   
+                             
         when 401
          redirect_to AUTH_SERVER + "/oauth/authorize?client_id=#{CLIENT_ID}&client_secret=#{CLIENT_SECRET}&redirect_uri=http://" + request.host_with_port + "/callback"
         else
@@ -213,15 +235,16 @@ class LocationController < ApplicationController
         # No Access token therefore authorize this application and request an access token
         redirect_to "https://hashblue.com/oauth/authorize?client_id=#{CLIENT_ID}&client_secret=#{CLIENT_SECRET}&redirect_uri=http://" + request.host_with_port + "/callback"
         puts "ERROR TOKEN #{CLIENT_SECRET}"
-      end
+       end
     end
 
     def redirect_uri
       "http://" + request.host_with_port + "/callback"
     end
 
+
       def get_with_access_token(path)
-        HTTParty.get(API_SERVER + path, :query => {:oauth_token => access_token})
+        HTTParty.get(API_SERVER + path, :query => {:oauth_token => access_token, :since => "2011-09-29T23:00Z" })
       end
 
       def access_token

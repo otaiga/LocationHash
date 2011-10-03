@@ -40,6 +40,8 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     geonames (0.2.2)
+    hash-blue (0.2)
+      json_pure (>= 1.4.3)
     httparty (0.7.8)
       crack (= 0.1.8)
     httpclient (2.2.1)
@@ -90,6 +92,7 @@ PLATFORMS
 DEPENDENCIES
   bluevia
   geonames
+  hash-blue
   httparty
   json
   rails (= 3.0.9)
