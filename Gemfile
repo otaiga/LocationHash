@@ -11,7 +11,7 @@ gem 'sqlite3'
 gem 'httparty'
 gem 'bluevia'
 gem 'geonames'
-gem 'hash-blue'
+gem 'hash-blue', :git => 'git://github.com/juandebravo/hash-blue.git'
 
 # Use unicorn as the web server
 # gem 'unicorn'
